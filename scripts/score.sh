@@ -88,5 +88,8 @@ while read -r LINE; do
         fi
     fi
 done < "$TMP_PATH"/"$ROI_NAME"_"$RBP".fa
-
 # intersect with input bed to store record the input entries
+bedtools intersect -wo -s\
+    -a "$OUT_PATH"/"$ROI_NAME".bed \
+    -b "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored.bed >\
+    "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_merged.bed
