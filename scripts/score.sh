@@ -93,3 +93,5 @@ bedtools intersect -wo -s\
     -a "$OUT_PATH"/"$ROI_NAME".bed \
     -b "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored.bed >\
     "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_merged.bed
+# remove the redundant overlap size column
+sed -i 's/\t[^\t]*$//' "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_merged.be
