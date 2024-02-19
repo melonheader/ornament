@@ -152,14 +152,19 @@ if [[ -z "$RBPS" ]]; then
 else
     NI_RBPS=${#RBPS[@]}
     for (( i = 0; i < "$NI_RBPS"; i++ )); do
-        RBP_TEST="$DATA_DIR"/"$GENOME"/${RBPS[i]}.bed.gz
-        if [ ! -f "$RBP_TEST" ]; then
-            echo "$RBP_TEST" is not in the database
+        #RBP_TEST="$DATA_DIR"/"$GENOME"/${RBPS[i]}.bed.gz
+        if ! find "$DATA_DIR"/"$GENOME" -maxdepth 1 -type f -name "${RBPS[i]}".bed.gz | grep -q "${RBPS[i]}"; then
+            echo "${RBPS[i]}" is not in the database
             unset 'RBPS[i]'
         fi
     done
 fi
 # {MAIN}
+## remove chr from the chromosome name
+ROI_NAME="$(basename "${ROI%".bed"}")"
+awk '{sub(/^chr/, "", $1); print}'  FS="\t" OFS="\t" "$ROI" |\
+sort -k1,1 -k2,2n > "$OUT_DIR"/"$ROI_NAME".bed
+ROI="$OUT_DIR"/"$ROI_NAME".bed
 for RBP in "${RBPS[@]}"; do
     ##
     (

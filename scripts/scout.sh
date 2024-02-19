@@ -15,7 +15,6 @@ TMP_PATH=$5
 
 # {MAIN}
 echo "scouting $RBP"
-echo "$OUT_PATH"
 ROI_NAME="$(basename "${ROI%".bed"}")"
 # extract RBP bed and intersect
 gunzip -c "$BED_DIR"/"$RBP".bed.gz |\

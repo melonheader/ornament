@@ -63,9 +63,9 @@ while read -r LINE; do
             done
             # record the maximum score for this strand
             MAX_SCORES["$STRAND"]="$MAX"
-            echo results for "$SEQ" at "$STRAND"
-            echo "$RNA_SEQ"
-            echo "$MAX"
+            #echo results for "$SEQ" at "$STRAND"
+            #echo "$RNA_SEQ"
+            #echo "$MAX"
         done
         # select the maximum scores between two strands...
         MAX_SCORE=0
@@ -76,8 +76,8 @@ while read -r LINE; do
                 MAX_STRAND="$STRAND"
             fi
         done
-        echo Maximum score over strands
-        echo "$MAX_SCORE"
+        #echo Maximum score over strands
+        #echo "$MAX_SCORE"
         # ...skip the score is too close to zero
         if [[ $(echo "scale=8; $MAX_SCORE < 0.0001" | bc) -eq 1 ]]; then
             continue
