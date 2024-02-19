@@ -41,3 +41,4 @@ for TAR in "${TARS[@]}"; do
   fi
 done
 #
+export PATH="$PATH":"$SOURCE_DIR"/scripts

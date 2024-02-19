@@ -4,7 +4,7 @@ A script to scan an oRNAment database with a -bed query [oRNAment database](http
 ## Example usage
 One must run the startup script to download the database and the necessary annotation.
 ```bash
-bash startup.sh
+source startup.sh
 ```
 Next, run the script to produce a bed file with scored binding sites of requested RBPs overlapping the query bed.
 ```bash

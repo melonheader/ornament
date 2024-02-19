@@ -88,3 +88,5 @@ while read -r LINE; do
         fi
     fi
 done < "$TMP_PATH"/"$ROI_NAME"_"$RBP".fa
+
+# intersect with input bed to store record the input entries
