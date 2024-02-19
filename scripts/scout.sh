@@ -25,3 +25,5 @@ sort -k1,1 -k2,2n > "$TMP_PATH"/"$RBP".bed
 bedtools intersect -wb -sorted -F 1.00 -a "$ROI" -b "$TMP_PATH"/"$RBP".bed |\
 awk 'BEGIN {OFS="\t"} {print $1, $2, $3, $8}' >\
 "$OUT_PATH"/"$ROI_NAME"_"$RBP".bed
+# clean after yourself
+rm "$TMP_PATH"/"$RBP".bed

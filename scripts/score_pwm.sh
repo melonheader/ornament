@@ -25,24 +25,24 @@ for ((i=0; i<${#SEQ}; i++)); do
     ## maximum probability
     MAX_PROB=${PROBS[1]}
     for ((j = 1; j < ${#PROBS[@]}; j++)); do
-        if [ "$(echo "scale=8; $MAX_PROB < ${PROBS[j]}" | bc)" -eq 1 ]; then
+        if [ "$(echo "scale=6; $MAX_PROB < ${PROBS[j]}" | bc)" -eq 1 ]; then
             MAX_PROB=${PROBS[j]}
         fi
     done
     ## minimum probability
     MIN_PROB=${PROBS[1]}
     for ((j = 1; j < ${#PROBS[@]}; j++)); do
-        if [ "$(echo "scale=8; $MIN_PROB > ${PROBS[j]}" | bc)" -eq 1 ]; then
+        if [ "$(echo "scale=6; $MIN_PROB > ${PROBS[j]}" | bc)" -eq 1 ]; then
             MIN_PROB=${PROBS[j]}
         fi
     done
     # multiply along the SEQ
-    PROD=$(echo "scale=8; $PROD*$PROB" | bc)
-    MIN_PROD=$(echo "scale=8; $MIN_PROD*$MIN_PROB" | bc)
-    MAX_PROD=$(echo "scale=8; $MAX_PROD*$MAX_PROB" | bc)
+    PROD=$(echo "scale=6; $PROD*$PROB" | bc)
+    MIN_PROD=$(echo "scale=6; $MIN_PROD*$MIN_PROB" | bc)
+    MAX_PROD=$(echo "scale=6; $MAX_PROD*$MAX_PROB" | bc)
 done
 # compute MSS
 # MSS = (current_score – minimum_score)/(maximum_score – minimum_score) - essentialy, minmax 
 # echo Results:
-MSS=$(echo "scale=8; ($PROD-$MIN_PROD)/($MAX_PROD-$MIN_PROD)" | bc)
+MSS=$(echo "scale=6; ($PROD-$MIN_PROD)/($MAX_PROD-$MIN_PROD)" | bc)
 echo "$MSS"

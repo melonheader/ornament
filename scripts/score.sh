@@ -57,7 +57,7 @@ while read -r LINE; do
             MAX=${SCORES[0]}
             # iterate over an array of MSS scores
             for SCORE in "${SCORES[@]}"; do
-                if [[ $(echo "scale=8; $SCORE > $MAX" | bc) -eq 1 ]]; then
+                if [[ $(echo "scale=6; $SCORE > $MAX" | bc) -eq 1 ]]; then
                     MAX=$SCORE
                 fi                   
             done
@@ -71,7 +71,7 @@ while read -r LINE; do
         MAX_SCORE=0
         for STRAND in "${!MAX_SCORES[@]}"; do
             SCORE="${MAX_SCORES[$STRAND]}"
-            if [[ $(echo "scale=8; $SCORE > $MAX_SCORE" | bc) -eq 1 ]]; then
+            if [[ $(echo "scale=6; $SCORE > $MAX_SCORE" | bc) -eq 1 ]]; then
                 MAX_SCORE="$SCORE"
                 MAX_STRAND="$STRAND"
             fi
@@ -79,7 +79,7 @@ while read -r LINE; do
         #echo Maximum score over strands
         #echo "$MAX_SCORE"
         # ...skip the score is too close to zero
-        if [[ $(echo "scale=8; $MAX_SCORE < 0.0001" | bc) -eq 1 ]]; then
+        if [[ $(echo "scale=6; $MAX_SCORE < 0.0001" | bc) -eq 1 ]]; then
             continue
         else
         # ...or record to a bed file
@@ -94,4 +94,4 @@ bedtools intersect -wo -s\
     -b "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored.bed >\
     "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_merged.bed
 # remove the redundant overlap size column
-sed -i 's/\t[^\t]*$//' "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_merged.be
+sed -i 's/\t[^\t]*$//' "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_merged.bed
