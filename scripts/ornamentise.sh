@@ -183,6 +183,7 @@ done; wait
 # merge results results
 if [ -n "$MERGE" ]; then
     for SCORED_BED in "$OUT_DIR"/*_scored_ann.bed; do
-        cat "$SCORED_BED" >> "$OUT_DIR"/"$ROI_NAME"_scored_ann_merged.bed
+        cat "$SCORED_BED" >> "$OUT_DIR"/"$ROI_NAME"_scored_merged.bed
+        rm "$SCORED_BED"
     done
 fi 
