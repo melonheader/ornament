@@ -81,6 +81,10 @@ while (( "$#" )); do
 				unset ARGS
             fi
         ;;
+        -m|--merge)
+            MERGE="TRUE"
+            shift
+        ;;
 		-n|--n_cores)
 			shift
 			if test $# -gt 0; then
@@ -122,7 +126,6 @@ done
 SOURCE_DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
 WD=$(dirname "$SOURCE_DIR")
 DATA_DIR="$WD"/data
-
 if [ -z "$OUT_DIR" ]; then
     OUT_DIR="$WD"/out
 fi
@@ -177,3 +180,9 @@ for RBP in "${RBPS[@]}"; do
         wait
     fi
 done; wait
+# merge results results
+if [ -n "$MERGE" ]; then
+    for SCORED_BED in "$OUT_DIR"/*_scored_ann.bed; do
+        cat "$SCORED_BED" >> "$OUT_DIR"/"$ROI_NAME"_scored_ann_merged.bed
+    done
+fi 

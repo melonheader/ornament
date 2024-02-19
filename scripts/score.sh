@@ -20,7 +20,7 @@ ROI_NAME="$(basename "${ROI%".bed"}")"
 TMP="$(dirname "$GENOME_FASTA")"
 PWM_DIR="$(dirname "$TMP")"/PWMs
 # get related fasta
-bedtools getfasta -fi "$GENOME_FASTA" -bed "$OUT_PATH"/"$ROI_NAME"_"$RBP".bed >\
+bedtools getfasta -fi "$GENOME_FASTA" -bed "$OUT_PATH"/"$ROI_NAME"_"$RBP".bed > \
     "$TMP_PATH"/"$ROI_NAME"_"$RBP".fa
 rm "$OUT_PATH"/"$ROI_NAME"_"$RBP".bed
 while read -r LINE; do
@@ -36,13 +36,13 @@ while read -r LINE; do
             continue
         fi
         # reshape into RNA vocabulary per strand and score spearately
-        STRANDS=( "+" "-" )
+        STRANDS=("+" "-")
         # declare an associative array to preserve strand specificity
         declare -A MAX_SCORES
         for STRAND in "${STRANDS[@]}"; do
             if [ "$STRAND" = "+" ]; then
                 RNA_SEQ=$(echo "$SEQ" | tr 'ATCGatcg' 'TAGCtagc' | tr 'T' 'U')
-                
+
             else
                 RNA_SEQ=$(echo "$SEQ" | rev | tr 'ATCGatcg' 'TAGCtagc' | tr 'T' 'U')
             fi
@@ -51,7 +51,7 @@ while read -r LINE; do
             # use the find
             for PWM_FILE in "$PWM_DIR/$RBP"*; do
                 MSS=$("$SOURCE"/score_pwm.sh "$RNA_SEQ" "$PWM_FILE")
-                SCORES+=( "$MSS" )
+                SCORES+=("$MSS")
             done
             # select the maximum score
             MAX=${SCORES[0]}
@@ -59,7 +59,7 @@ while read -r LINE; do
             for SCORE in "${SCORES[@]}"; do
                 if [[ $(echo "scale=6; $SCORE > $MAX" | bc) -eq 1 ]]; then
                     MAX=$SCORE
-                fi                   
+                fi
             done
             # record the maximum score for this strand
             MAX_SCORES["$STRAND"]="$MAX"
@@ -82,16 +82,17 @@ while read -r LINE; do
         if [[ $(echo "scale=6; $MAX_SCORE < 0.0001" | bc) -eq 1 ]]; then
             continue
         else
-        # ...or record to a bed file
-        echo -e "$SEQ_NAME""\t""$RBP""\t""$MAX_SCORE""\t""$MAX_STRAND" >>\
-            "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored.bed
+            # ...or record to a bed file
+            echo -e "$SEQ_NAME""\t""$RBP""\t""$MAX_SCORE""\t""$MAX_STRAND" >> \
+                "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored.bed
         fi
     fi
-done < "$TMP_PATH"/"$ROI_NAME"_"$RBP".fa
+done <"$TMP_PATH"/"$ROI_NAME"_"$RBP".fa
 # intersect with input bed to store record the input entries
-bedtools intersect -wo -s\
-    -a "$OUT_PATH"/"$ROI_NAME".bed \
-    -b "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored.bed >\
-    "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_merged.bed
-# remove the redundant overlap size column
-sed -i 's/\t[^\t]*$//' "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_merged.bed
+if [ -f "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored.bed ]; then
+    bedtools intersect -wo -s -a "$OUT_PATH"/"$ROI_NAME".bed \
+        -b "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored.bed > \
+        "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_ann.bed
+    # remove the redundant overlap size column
+    sed -i 's/\t[^\t]*$//' "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_ann.bed
+fi
