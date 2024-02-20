@@ -93,6 +93,11 @@ if [ -f "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored.bed ]; then
     bedtools intersect -wo -s -a "$OUT_PATH"/"$ROI_NAME".bed \
         -b "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored.bed > \
         "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_ann.bed
-    # remove the redundant overlap size column
-    sed -i 's/\t[^\t]*$//' "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_ann.bed
+    # check if the intersection is non-empty (can occur due to strandedness)
+    if [ "$(wc -l < "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_ann.bed)" = 0 ] ; then
+        rm "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_ann.bed
+    else 
+        # remove the redundant overlap size column
+        sed -i 's/\t[^\t]*$//' "$OUT_PATH"/"$ROI_NAME"_"$RBP"_scored_ann.bed
+    fi
 fi
